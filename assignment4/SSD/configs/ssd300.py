@@ -5,7 +5,7 @@ from ssd.modeling import SSD300, SSDMultiboxLoss, backbones, AnchorBoxes
 from tops.config import LazyCall as L
 from ssd.data.mnist import MNISTDetectionDataset
 from ssd import utils
-from ssd.data.transforms import Normalize, ToTensor, GroundTruthBoxesToAnchors
+from ssd.data.transforms import Normalize, ToTensor, GroundTruthBoxesToAnchors, RandomHorizontalFlip, RandomSampleCrop, Resize
 from .utils import get_dataset_dir, get_output_dir
 
 
@@ -65,8 +65,13 @@ data_train = dict(
         data_dir=get_dataset_dir("mnist_object_detection/train"),
         is_train=True,
         transform=L(torchvision.transforms.Compose)(transforms=[
-            L(ToTensor)(),  # ToTensor has to be applied before conversion to anchors.
+            # L(ToTensor)(),  # ToTensor has to be applied before conversion to anchors.
             # GroundTruthBoxesToAnchors assigns each ground truth to anchors, required to compute loss in training.
+            # L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+            L(RandomSampleCrop)(),
+            L(ToTensor)(),
+            L(RandomHorizontalFlip)(),
+            L(Resize)(imshape="${train.imshape}"),
             L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
         ])
     ),
