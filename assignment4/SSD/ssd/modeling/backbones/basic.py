@@ -30,7 +30,7 @@ class BasicModel(torch.nn.Module):
             nn.MaxPool2d(2, 2),
             nn.Conv2d(32, 64, 3, 1, 1),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
+            # nn.MaxPool2d(2, 2),
             nn.Conv2d(64, 64, 3, 1, 1),
             nn.ReLU(),
             nn.Conv2d(64, output_channels[0], 3, 2, 1),
@@ -83,9 +83,9 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 1x1
             nn.ReLU(),
-            nn.Conv2d(output_channels[4], 128, 3, 1, 1),
+            nn.Conv2d(output_channels[4], 128, 2, 1, 1),
             nn.ReLU(),
-            nn.Conv2d(128, output_channels[5], 3, 1, 0),
+            nn.Conv2d(128, output_channels[5], 2, 1, 0),
             nn.ReLU()
         )
 
