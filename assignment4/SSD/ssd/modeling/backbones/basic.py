@@ -83,7 +83,7 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 1x1
             nn.ReLU(),
-            nn.Conv2d(output_channels[4], 128, 2, 1, 0),
+            nn.Conv2d(output_channels[4], 128, 2, 1, 1),
             nn.ReLU(),
             nn.Conv2d(128, output_channels[5], 2, 1, 0),
             nn.ReLU()
