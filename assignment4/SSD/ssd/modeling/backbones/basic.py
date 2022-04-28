@@ -30,7 +30,7 @@ class BasicModel(torch.nn.Module):
             nn.MaxPool2d(2, 2),
             nn.Conv2d(32, 64, 3, 1, 1),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
+            # nn.MaxPool2d(2, 2),
             nn.Conv2d(64, 64, 3, 1, 1),
             nn.ReLU(),
             nn.Conv2d(64, output_channels[0], 3, 2, 1),
