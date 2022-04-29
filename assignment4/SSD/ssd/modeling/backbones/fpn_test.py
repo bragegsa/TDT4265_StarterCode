@@ -16,7 +16,7 @@ return_nodes = {
     'layer1': 'layer1',
     'layer2': 'layer2',
     'layer3': 'layer3',
-    'layer4': 'layer4',
+    # 'layer4': 'layer4',
 }
 
 # Now you can build the feature extractor. This returns a module whose forward
@@ -27,14 +27,13 @@ return_nodes = {
 #     'layer3': output of layer 3,
 #     'layer4': output of layer 4,
 # }
-create_feature_extractor(m, return_nodes=return_nodes)
 
 # Let's put all that together to wrap resnet50 with MaskRCNN
 
 # MaskRCNN requires a backbone with an attached FPN
-class Resnet50WithFPN(torch.nn.Module):
+class FPN(torch.nn.Module):
     def __init__(self):
-        super(Resnet50WithFPN, self).__init__()
+        super(FPN, self).__init__()
         # Get a resnet50 backbone
         m = models.resnet34()
         # Extract 4 main layers (note: MaskRCNN needs this particular name
@@ -60,4 +59,4 @@ class Resnet50WithFPN(torch.nn.Module):
 
 
 # Now we can build our model!
-model = MaskRCNN(Resnet50WithFPN(), num_classes=91).eval()
+model = MaskRCNN(FPN(), num_classes=91).eval()

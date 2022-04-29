@@ -19,9 +19,9 @@ from .tdt4265 import (
 
 import torchvision.models as models
 
-resnet34 = models.resnet34(pretrained=True)
+# resnet34 = models.resnet34(pretrained=True)
 
-backbone = L(FPN)(resnet34)
+backbone = L(FPN)(type = "resnet34", pretrained=True)
 
 # The config below is copied from the ssd300.py model trained on images of size 300*300.
 # The images in the tdt4265 dataset are of size 128 * 1024, so resizing to 300*300 is probably a bad idea
