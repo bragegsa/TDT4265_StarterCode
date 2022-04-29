@@ -13,21 +13,27 @@ train.imshape = (128, 1024)
 train.image_channels = 3
 model.num_classes = 8 + 1  # Add 1 for background class
 
+# TRANSFORM_VERSION = TASKTASKVERSION
+# 1:   Default transforms
+# 221: RandomSampleCrop, RandomHorizontalFlip
+TRANSFORM_VERSION = 221
 
-train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
-    L(ToTensor)(),
-    L(Resize)(imshape="${train.imshape}"),
-    L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
-])
 
-# train_cpu_transform_TASK_TASK_VERSION
-train_cpu_transform_2_2_1 = L(torchvision.transforms.Compose)(transforms=[
-    L(RandomSampleCrop)(),
-    L(ToTensor)(),
-    L(RandomHorizontalFlip)(),
-    L(Resize)(imshape="${train.imshape}"),
-    L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
-])
+if TRANSFORM_VERSION == 1:
+    train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
+        L(ToTensor)(),
+        L(Resize)(imshape="${train.imshape}"),
+        L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+    ])
+elif TRANSFORM_VERSION == 221:
+    train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
+        L(RandomSampleCrop)(),
+        L(ToTensor)(),
+        L(RandomHorizontalFlip)(),
+        L(Resize)(imshape="${train.imshape}"),
+        L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+    ])
+
 
 val_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
     L(ToTensor)(),
@@ -40,8 +46,7 @@ gpu_transform = L(torchvision.transforms.Compose)(transforms=[
 
 data_train.dataset = L(TDT4265Dataset)(
     img_folder=get_dataset_dir("tdt4265_2022"),
-    # Change the training transform to the one you want to use
-    transform="${train_cpu_transform_2_2_1}",
+    transform="${train_cpu_transform}",
     annotation_file=get_dataset_dir("tdt4265_2022/train_annotations.json"))
 
 data_val.dataset = L(TDT4265Dataset)(
