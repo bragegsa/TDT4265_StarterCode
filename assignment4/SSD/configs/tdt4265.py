@@ -11,15 +11,15 @@ from .utils import get_dataset_dir
 # Keep the model, except change the backbone and number of classes
 train.imshape = (128, 1024)
 train.image_channels = 3
-model.num_classes = 8 + 1  # Add 1 for background class
+# Add 1 for background class:
+model.num_classes = 8 + 1  
 
 # TRANSFORM_VERSION = TASK+TASK+VERSION
 # 1:   Default transforms (ToTensor, Resize, GroundTruthBoxesToAnchors)
 # 221: RandomSampleCrop, RandomHorizontalFlip
-# 222: RandomSampleCrop, RandomHorizontalFlip, ColorJitter
+# 222: RandomHorizontalFlip, ColorJitter
 TRANSFORM_VERSION = 221
-
-
+print("\nTRANSFORM_VERSION:", TRANSFORM_VERSION, "\n")
 
 if TRANSFORM_VERSION == 1:
     train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
@@ -37,7 +37,6 @@ elif TRANSFORM_VERSION == 221:
     ])
 elif TRANSFORM_VERSION == 222:
     train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
-        L(RandomSampleCrop)(),
         L(ToTensor)(),
         L(RandomHorizontalFlip)(),
         L(Resize)(imshape="${train.imshape}"),
