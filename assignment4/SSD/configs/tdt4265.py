@@ -15,30 +15,40 @@ model.num_classes = 8 + 1  # Add 1 for background class
 
 
 train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
-    # L(ToTensor)(),
-    # L(Resize)(imshape="${train.imshape}"),
-    # L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+    L(ToTensor)(),
+    L(Resize)(imshape="${train.imshape}"),
+    L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+])
+
+# train_cpu_transform_TASK_TASK_VERSION
+train_cpu_transform_2_2_1 = L(torchvision.transforms.Compose)(transforms=[
     L(RandomSampleCrop)(),
     L(ToTensor)(),
     L(RandomHorizontalFlip)(),
     L(Resize)(imshape="${train.imshape}"),
     L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
 ])
+
 val_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
     L(ToTensor)(),
     L(Resize)(imshape="${train.imshape}"),
 ])
+
 gpu_transform = L(torchvision.transforms.Compose)(transforms=[
     L(Normalize)(mean=[0.4765, 0.4774, 0.2259], std=[0.2951, 0.2864, 0.2878])
 ])
+
 data_train.dataset = L(TDT4265Dataset)(
     img_folder=get_dataset_dir("tdt4265_2022"),
-    transform="${train_cpu_transform}",
+    # Change the training transform to the one you want to use
+    transform="${train_cpu_transform_2_2_1}",
     annotation_file=get_dataset_dir("tdt4265_2022/train_annotations.json"))
+
 data_val.dataset = L(TDT4265Dataset)(
     img_folder=get_dataset_dir("tdt4265_2022"),
     transform="${val_cpu_transform}",
     annotation_file=get_dataset_dir("tdt4265_2022/val_annotations.json"))
+
 data_val.gpu_transform = gpu_transform
 data_train.gpu_transform = gpu_transform
 
