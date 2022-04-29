@@ -35,6 +35,7 @@ anchors = L(AnchorBoxes)(
     scale_size_variance=0.2
 )
 
+# Her må vi endre på hvilke Model vi bruker i task 2.3
 backbone = L(backbones.BasicModel)(
     output_channels=[128, 256, 128, 128, 64, 64],
     image_channels="${train.image_channels}",
