@@ -30,6 +30,15 @@ class Resnet50WithFPN(torch.nn.Module):
         model = resnet50(pretrained=True)
         modules = list(model.children())[:-2]
         backbone = nn.Sequential(*modules)
+
+        self.conv = backbone[0]
+        self.bn1 = backbone[1]
+        self.relu = backbone[2]
+        self.maxpool = backbone[3]
+        self.conv1 = backbone[4]
+        self.conv2 = backbone[5]
+        self.conv3 = backbone[6]
+        self.conv4 = backbone[7]
         
         self.map5 = nn.Sequential(
 
@@ -46,9 +55,9 @@ class Resnet50WithFPN(torch.nn.Module):
 
             # Resolution 1x1
             nn.ReLU(),
-            nn.Conv2d(in_channels=output_channels[4], out_channels=128, kernel_size=2, stride=1, padding=1),
+            nn.Conv2d(in_channels=output_channels[4], out_channels=256, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=2, stride=1, padding=0),
             nn.ReLU()
         )
 
@@ -67,11 +76,39 @@ class Resnet50WithFPN(torch.nn.Module):
         """
         out_features = []
 
+        #out_features = nn.ModuleList
+        out_features_keys = ["c1","c2","c3","c4","c5","c6"]
         
+        #fpn = torchvision.ops.FeaturePyramidNetwork(self.out_channels, 64)
+        
+        #First layers of ResNet34 
+        x = self.conv(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        x = self.conv1(x)
+        out_features.append(x)
+        #print("c1: ", c1.shape)
+        x = self.conv2(x)
+        out_features.append(x)
+        #print("c2: ", c2.shape)
+        x = self.conv3(x)
+        out_features.append(x)
+        #print("c3: ", c3.shape)
+        x = self.conv4(x)
+        out_features.append(x)
+
         x = self.map5(x)
         out_features.append(x)
         x = self.map6(x)
         out_features.append(x)
+
+        output_dict = dict(zip(out_features_keys, out_features))
+        #print(output_dict)
+        #output_dict= {out_features_keys[i]: out_features[i] for i in range(len(out_features_keys))}
+        output_fpn = self.fpn(output_dict)
+        out_features = output_fpn.values()
 
         for idx, feature in enumerate(out_features):
             out_channel = self.out_channels[idx]

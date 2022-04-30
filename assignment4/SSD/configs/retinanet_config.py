@@ -1,6 +1,7 @@
-from ssd.modeling import AnchorBoxes
+from ssd.modeling import AnchorBoxes, SSD300
 from ssd.modeling.backbones import Resnet50WithFPN
 from tops.config import LazyCall as L
+from ssd.modeling.backbones import BasicModel
 # The line belows inherits the configuration set for the tdt4265 dataset
 from .tdt4265 import (
     train,
@@ -24,8 +25,13 @@ import torchvision.models as models
 # Change the imshape to (128, 1024) and experiment with better prior boxes
 train.imshape = (128, 1024)
 
-backbone = L(Resnet50WithFPN)()
-
+backbone = L(Resnet50WithFPN)(
+# backbone = L(BasicModel)(
+    output_channels=[256, 512, 1024, 2048, 256, 64],
+    # output_channels=[128, 256, 128, 128, 64, 64],
+    image_channels="${train.image_channels}",
+    output_feature_sizes="${anchors.feature_sizes}"
+)
 
 anchors = L(AnchorBoxes)(
     feature_sizes= [[32, 256], [16, 128], [8, 64], [4, 32], [2, 16], [1, 8]],
