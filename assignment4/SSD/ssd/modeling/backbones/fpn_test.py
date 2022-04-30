@@ -12,11 +12,16 @@ from torchvision.ops.feature_pyramid_network import FeaturePyramidNetwork
 # https://pytorch.org/vision/main/feature_extraction.html?highlight=backbone_utils
 # http://pytorch.org/vision/main/generated/torchvision.models.feature_extraction.create_feature_extractor.html
 
+m = models.resnet34()
+train_nodes, eval_nodes = get_graph_node_names(models.resnet34())
+print(train_nodes)
+
 return_nodes = {
-    'layer1': 'layer1',
-    'layer2': 'layer2',
-    'layer3': 'layer3',
-    # 'layer4': 'layer4',
+    # node_name: user-specified key for output dict
+    'layer1.2.relu_2': 'layer1',
+    'layer2.3.relu_2': 'layer2',
+    'layer3.5.relu_2': 'layer3',
+    'layer4.2.relu_2': 'layer4',
 }
 
 # Now you can build the feature extractor. This returns a module whose forward

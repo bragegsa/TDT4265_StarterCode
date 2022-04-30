@@ -1,5 +1,5 @@
 from ssd.modeling import AnchorBoxes
-from ssd.modeling.backbones import FPN
+from ssd.modeling.backbones.fpn_test import FPN
 from tops.config import LazyCall as L
 # The line belows inherits the configuration set for the tdt4265 dataset
 from .tdt4265 import (
