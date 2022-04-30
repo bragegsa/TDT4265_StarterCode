@@ -44,10 +44,10 @@ class Resnet50WithFPN(torch.nn.Module):
 
             # Resolution 3x3
             nn.ReLU(),
-            nn.Conv2d(in_channels=output_channels[3], out_channels=128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=output_channels[-3], out_channels=128, kernel_size=3, stride=1, padding=1),
             # nn.Conv2d(output_channels[3], 256, 3, 1, 1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=128, out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[-2], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -55,9 +55,9 @@ class Resnet50WithFPN(torch.nn.Module):
 
             # Resolution 1x1
             nn.ReLU(),
-            nn.Conv2d(in_channels=output_channels[4], out_channels=256, kernel_size=2, stride=1, padding=1),
+            nn.Conv2d(in_channels=output_channels[-2], out_channels=256, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=2, stride=1, padding=0),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[-1], kernel_size=2, stride=1, padding=0),
             nn.ReLU()
         )
 
