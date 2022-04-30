@@ -3,7 +3,7 @@
 
 from queue import PriorityQueue
 import torch
-from torchvision.models import resnet101
+from torchvision.models import resnet50
 from torchvision.models.resnet import BasicBlock
 from torchvision.models.feature_extraction import get_graph_node_names
 from torchvision.models.feature_extraction import create_feature_extractor
@@ -21,7 +21,7 @@ class Resnet34WithFPN(torch.nn.Module):
 
         self.out_channels = [256, 256, 256, 2048, 64, 64]
 
-        m = resnet101(pretrained=True)
+        m = resnet50(pretrained=True)
 
 
         self.extras = nn.ModuleList([
