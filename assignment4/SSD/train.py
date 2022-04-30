@@ -62,6 +62,8 @@ def print_config(cfg):
 @click.command()
 @click.argument("config_path", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option("--evaluate-only", default=False, is_flag=True, help="Only run evaluation, no training.")
+
+
 def train(config_path: Path, evaluate_only: bool):
     logger.logger.DEFAULT_SCALAR_LEVEL = logger.logger.DEBUG
     cfg = utils.load_config(config_path)
@@ -79,6 +81,7 @@ def train(config_path: Path, evaluate_only: bool):
     checkpointer.register_models(
         dict(model=model, optimizer=optimizer, scheduler=scheduler))
     total_time = 0
+    
     if checkpointer.has_checkpoint():
         train_state = checkpointer.load_registered_models(load_best=False)
         total_time = train_state["total_time"]
@@ -94,13 +97,16 @@ def train(config_path: Path, evaluate_only: bool):
         gpu_transform=gpu_transform_val,
         label_map=cfg.label_map
     )
+
     if evaluate_only:
         evaluation_fn()
         exit()
+
     scaler = torch.cuda.amp.GradScaler(enabled=tops.AMP())
     dummy_input = tops.to_cuda(torch.randn(1, cfg.train.image_channels, *cfg.train.imshape))
     tops.print_module_summary(model, (dummy_input,))
     start_epoch = logger.epoch()
+
     for epoch in range(start_epoch, cfg.train.epochs):
         start_epoch_time = time.time()
         train_epoch(model, scaler, optimizer, dataloader_train, scheduler, gpu_transform_train, cfg.train.log_interval)
