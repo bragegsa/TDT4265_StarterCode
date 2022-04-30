@@ -16,6 +16,7 @@ from torch.optim.lr_scheduler import ChainedScheduler
 from omegaconf import OmegaConf
 torch.backends.cudnn.benchmark = True
 
+
 def train_epoch(
         model, scaler: torch.cuda.amp.GradScaler,
         optim, dataloader_train, scheduler,
@@ -81,7 +82,7 @@ def train(config_path: Path, evaluate_only: bool):
     checkpointer.register_models(
         dict(model=model, optimizer=optimizer, scheduler=scheduler))
     total_time = 0
-    
+
     if checkpointer.has_checkpoint():
         train_state = checkpointer.load_registered_models(load_best=False)
         total_time = train_state["total_time"]
