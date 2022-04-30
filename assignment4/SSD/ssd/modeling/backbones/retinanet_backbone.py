@@ -114,8 +114,8 @@ class Resnet50WithFPN(torch.nn.Module):
             out_channel = self.out_channels[idx]
             h, w = self.output_feature_shape[idx]
             expected_shape = (out_channel, h, w)
-            # assert feature.shape[1:] == expected_shape, \
-            #     f"Expected shape: {expected_shape}, got: {feature.shape[1:]} at output IDX: {idx}"
-        # assert len(out_features) == len(self.output_feature_shape),\
-        #     f"Expected that the length of the outputted features to be: {len(self.output_feature_shape)}, but it was: {len(out_features)}"
+            assert feature.shape[1:] == expected_shape, \
+                f"Expected shape: {expected_shape}, got: {feature.shape[1:]} at output IDX: {idx}"
+        assert len(out_features) == len(self.output_feature_shape),\
+            f"Expected that the length of the outputted features to be: {len(self.output_feature_shape)}, but it was: {len(out_features)}"
         return tuple(out_features)
