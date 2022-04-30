@@ -26,7 +26,7 @@ class Resnet50WithFPN(torch.nn.Module):
         self.out_channels = output_channels
         self.output_feature_shape = output_feature_sizes
 
-        self.fpn = FeaturePyramidNetwork(in_channels_list=output_channels, out_channels=512)
+        self.fpn = FeaturePyramidNetwork(in_channels_list=output_channels, out_channels=256)
         model = resnet50(pretrained=True)
         modules = list(model.children())[:-2]
         backbone = nn.Sequential(*modules)
