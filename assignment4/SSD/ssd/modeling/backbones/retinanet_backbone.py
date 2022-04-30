@@ -57,7 +57,7 @@ class Resnet50WithFPN(torch.nn.Module):
             nn.ReLU(),
             nn.Conv2d(in_channels=output_channels[4], out_channels=256, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(in_channels=256, out_channels=output_channels[5], kernel_size=2, stride=2, padding=0),
             nn.ReLU()
         )
 
