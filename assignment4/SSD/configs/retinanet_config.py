@@ -29,9 +29,9 @@ backbone = L(Resnet50WithFPN)(
 # backbone = L(BasicModel)(
     # output_channels=[256, 512, 1024, 2048, 256, 64],
     # output_channels=[128, 256, 128, 128, 64, 64],
-    output_channels=[256, 256, 256, 2048, 64, 64],
-    image_channels="${train.image_channels}",
-    output_feature_sizes="${anchors.feature_sizes}"
+    output_channels = [256, 256, 256, 2048, 64, 64],
+    image_channels = "${train.image_channels}",
+    output_feature_sizes = "${anchors.feature_sizes}"
 )
 
 anchors = L(AnchorBoxes)(
