@@ -1,7 +1,9 @@
 # Code modified from: https://github.com/hsjeong5/MNIST-for-Numpy
+
+import pickle
 import numpy as np
 import gzip
-import pickle
+# import pickle
 import pathlib
 from urllib import request
 
