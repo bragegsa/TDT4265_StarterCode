@@ -8,7 +8,7 @@ from .tdt4265 import (
     optimizer,
     schedulers,
     loss_objective,
-    model,
+    # model,
     # backbone,
     data_train,
     data_val,
@@ -25,14 +25,20 @@ import torchvision.models as models
 # Change the imshape to (128, 1024) and experiment with better prior boxes
 train.imshape = (128, 1024)
 
-backbone = L(Resnet50WithFPN)(
 # backbone = L(BasicModel)(
-    # output_channels=[256, 512, 1024, 2048, 256, 64],
-    # output_channels=[128, 256, 128, 128, 64, 64],
-    output_channels = [256, 256, 256, 2048, 64, 64],
+backbone = L(Resnet50WithFPN)(
+    output_channels = [256, 512, 1024, 2048, 64, 64],
+    # output_channels = [256,256,256,2048,64,64],
     image_channels = "${train.image_channels}",
     output_feature_sizes = "${anchors.feature_sizes}"
 )
+
+model = L(SSD300)(
+    feature_extractor="${backbone}",
+    anchors="${anchors}",
+    loss_objective="${loss_objective}",
+    num_classes=8 + 1  # Add 1 for background
+)  
 
 anchors = L(AnchorBoxes)(
     feature_sizes= [[32, 256], [16, 128], [8, 64], [4, 32], [2, 16], [1, 8]],
