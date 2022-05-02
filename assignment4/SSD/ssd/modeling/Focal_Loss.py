@@ -46,7 +46,7 @@ class FocalLoss(nn.Module):
         self.scale_wh = 1.0/anchors.scale_wh
 
         self.alpha = alpha
-        print("self.alpha:", self.alpha)
+        # print("self.alpha:", self.alpha)
 
         self.sl1_loss = nn.SmoothL1Loss(reduction='none')
         self.anchors = nn.Parameter(anchors(order="xywh").transpose(0, 1).unsqueeze(dim = 0),
