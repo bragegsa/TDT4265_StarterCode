@@ -23,14 +23,14 @@ class RetinaNet(nn.Module):
         self.regression_heads = []
         self.classification_heads = []
         self.anchor_prob_initialization = anchor_prob_initialization
-        self.num_anchors = anchors.num_boxes_per_fmap[0]
+        self.num_anchors_last = anchors.num_boxes_per_fmap[-1]
+        print("self.num_anchors:", self.num_anchors_last)
 
         # Initialize output heads that are applied to each feature map from the backbone.
         for n_boxes, out_ch in zip(anchors.num_boxes_per_fmap, self.feature_extractor.out_channels):
             
             # print("anchors.num_boxes_per_fmap:", anchors.num_boxes_per_fmap)
             # print("n_boxes:", n_boxes)
-
             map_1 = nn.Sequential(
                     nn.Conv2d(out_ch, out_ch, kernel_size=3, padding=1),
                     nn.ReLU(),
@@ -76,25 +76,17 @@ class RetinaNet(nn.Module):
             pi = 0.01
             b_background = torch.log(torch.tensor(p*(K-1)/(1-p)))
             b_final = -torch.log(torch.tensor((1-pi)/pi))
-
-            # .bias does not work and produces an error
-
-            # nn.init.constant_(self.regression_heads[:].bias.data, 0)
-
-            # nn.init.constant_(self.classification_heads[:].bias.data, 0)
-
-            # nn.init.constant_(self.classification_heads[-1].bias.data[:4], b_background)
-        
+            
             for layer in layers:
-                for param in layer.parameters():
-                    if param.dim() > 1: 
-                        # https://pytorch.org/docs/stable/nn.init.html
-                        nn.init.normal_(param, b, sigma)
-                    else:
-                        nn.init.constant(layer.bias, 0)
-                        nn.init.constant_(layer.bias.data[:self.num_anchors], b_background)
+                for param in layer:
+                    if hasattr(param, "bias"):
+                        # print(param.out_channels)
+                        nn.init.normal_(param.bias.data[:], b, sigma)
+                        nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
 
-            nn.init.constant_(layers[-2].bias.data[self.num_anchors:], b_final)
+            nn.init.constant_(self.classification_heads[-1][-1].bias, b_final)
+            nn.init.constant_(self.classification_heads[-1][-1].bias.data[:self.num_anchors_last], b_background)
+            print("self.classification_heads[-1].bias:", self.classification_heads[-1][-1].bias)
 
         else:
             print(" --- Weights not initialized ---")
