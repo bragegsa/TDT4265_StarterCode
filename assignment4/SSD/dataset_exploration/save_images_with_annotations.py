@@ -7,6 +7,10 @@ from vizer.draw import draw_boxes
 from ssd import utils
 from tqdm import tqdm
 
+# Used to count the total number of labels
+total_labels = [0]*9
+empty_images = 0
+total_area = [0]*9
 
 def get_config(config_path):
     cfg = LazyConfig.load(config_path)
@@ -47,6 +51,25 @@ def visualize_boxes_on_image(batch, label_map):
     boxes = convert_boxes_coords_to_pixel_coords(batch["boxes"], batch["width"], batch["height"])
     labels = batch["labels"][0].cpu().numpy().tolist()
 
+    # Added a label counter
+    # for i in labels:
+    #     total_labels[i] += 1
+
+    for box, i in zip(boxes, labels):
+        height = box[3] - box[1]
+        width = box[2] - box[0]
+        area = height * width
+
+        # Added an area counter
+        total_area[i] += area
+
+        # Added a label counter
+        total_labels[i] += 1
+    
+    # Checking if the image has any objects annotated or not
+    if not(labels):
+        empty_images += 1
+
     image_with_boxes = draw_boxes(image, boxes, labels, class_name_map=label_map)
     return image_with_boxes
 
@@ -85,15 +108,43 @@ def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_vis
         cv2.imwrite(filepath, viz_image[:, :, ::-1])
 
 
+def print_total_labels(num_images_to_visualize):
+    # Printing total number of detected objects, total number of each object and percentage of total objects for each class.
+    
+    labels_dict = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_percentages = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_area = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    
+    total_label_count = np.sum(total_labels)
+
+    for key, num, area in zip(labels_dict, total_labels, total_area):
+        labels_dict[key] = num
+        labels_percentages[key] = str(round(num/total_label_count*100, 0)) + ("%")
+        if num:
+            labels_area[key] = round(area/num, 0)
+        else:
+            labels_area[key] = "No area"
+        
+    print()
+    print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
+    print("Total labels per class:", labels_dict, "\n")
+    print("Percentage of detected objects per class:", labels_percentages, "\n")
+    print("The total number of empty images are", empty_images, "which is", round(empty_images/num_images_to_visualize, 2)*100, "percent of all the images. \n")
+    print("Average area (in pixels) for each class are", labels_area, "\n")
+
+
 def main():
     config_path = "configs/tdt4265.py"
+    # config_path = "configs/tdt4265_augmented_config.py"
     cfg = get_config(config_path)
     dataset_to_visualize = "train"  # or "val"
-    num_images_to_visualize = 500  # Increase this if you want to save more images
+    num_images_to_visualize = 1000  # Increase this if you want to save more images
 
     dataloader = get_dataloader(cfg, dataset_to_visualize)
     save_folder = os.path.join("dataset_exploration", "annotation_images")
     save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize)
+
+    print_total_labels(num_images_to_visualize)
 
 
 if __name__ == '__main__':
