@@ -6,7 +6,7 @@ from ssd.data.transforms import (
     ToTensor, Normalize, Resize,
     GroundTruthBoxesToAnchors, RandomHorizontalFlip, RandomSampleCrop, ColorJitter)
 from .ssd300 import train, optimizer, schedulers, backbone, model, data_train, data_val, loss_objective
-from .test_anchors.base import anchors 
+from .tdt4265_augmented_config import anchors 
 from .utils import get_dataset_dir
 
 # Keep the model, except change the backbone and number of classes
