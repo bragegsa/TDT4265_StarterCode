@@ -1,5 +1,7 @@
-import cv2
+# Saving images with annotations, and printing info about the different classes
+
 import os
+import cv2
 import numpy as np
 
 from tops.config import instantiate, LazyConfig
@@ -10,8 +12,8 @@ from tqdm import tqdm
 # Used to count the total number of labels
 total_labels = [0]*9
 empty_images = 0
-total_area = [0]*9
-total_aspect_ratios = [0]*9
+total_area = [[] for _ in range(10)]
+total_aspect_ratios = [[] for _ in range(10)]
 
 
 def get_config(config_path):
@@ -59,9 +61,8 @@ def visualize_boxes_on_image(batch, label_map):
         area = height * width
         aspect_ratio = width/height
 
-        # Added an area counter
-        total_area[i] += area
-        total_aspect_ratios[i] += aspect_ratio
+        total_area[i].append(area)
+        total_aspect_ratios[i].append(aspect_ratio)
 
         # Added a label counter
         total_labels[i] += 1
@@ -113,36 +114,41 @@ def print_total_labels(num_images_to_visualize):
 
     labels_dict =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_percentages =    {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_area =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_aspect_ratios =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    
+    labels_area_mean =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_area_std =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_aspect_ratios_mean =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_aspect_ratios_std =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+
     total_label_count = np.sum(total_labels)
 
-    for key, num, area, aspect_ratios in zip(labels_dict, total_labels, total_area, total_aspect_ratios):
-        labels_dict[key] = num
-        labels_percentages[key] = str(round(num/total_label_count*100, 0)) + ("%")
-        if num:
-            labels_area[key] = round(area/num, 0)
-            labels_aspect_ratios[key] = round(aspect_ratios/num, 2)
+    for key, labels, areas, aspect_ratios in zip(labels_dict, total_labels, total_area, total_aspect_ratios):
+        labels_dict[key] = labels
+        labels_percentages[key] = str(round(labels/total_label_count*100, 0)) + ("%")
+        if labels:
+            labels_area_mean[key] = round(np.mean(areas), 1)
+            labels_area_std[key] = round(np.std(areas), 1)
+            labels_aspect_ratios_mean[key] = round(np.mean(aspect_ratios), 1)
+            labels_aspect_ratios_std[key] = round(np.std(aspect_ratios), 1)
         else:
-            labels_area[key] = "No area"
-            labels_aspect_ratios[key] = "No apect ratio"
+            labels_area_mean[key] = "No area"
+            labels_aspect_ratios_mean[key] = "No apect ratio"
         
     print()
     print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
     print("Total labels per class:", labels_dict, "\n")
     print("Percentage of detected objects per class:", labels_percentages, "\n")
     print("The total number of empty images are", empty_images, "which is", round(empty_images/num_images_to_visualize, 2)*100, "percent of all the images. \n")
-    print("Average area (in pixels) for each class are", labels_area, "\n")
-    print("Average aspect ratio for each class are", labels_aspect_ratios, "\n")
+    print("Average area (in pixels) for each class are", labels_area_mean, "\n")
+    print("The standard deviation in area (in pixels) for each class are", labels_area_std, "\n")
+    print("Average aspect ratio for each class are", labels_aspect_ratios_mean, "\n")
+    print("The standard deviation in aspect ratio for each class are", labels_aspect_ratios_std, "\n")
 
 
 def main():
     config_path = "configs/tdt4265.py"
-    # config_path = "configs/tdt4265_augmented_config.py"
     cfg = get_config(config_path)
     dataset_to_visualize = "train"  # or "val"
-    num_images_to_visualize = 1000  # Increase this if you want to save more images
+    num_images_to_visualize = 500  # Increase this if you want to save more images
 
     dataloader = get_dataloader(cfg, dataset_to_visualize)
     save_folder = os.path.join("dataset_exploration", "annotation_images")
