@@ -24,7 +24,7 @@ class RetinaNet(nn.Module):
         self.classification_heads = []
         self.anchor_prob_initialization = anchor_prob_initialization
         self.num_anchors_last = anchors.num_boxes_per_fmap[-1]
-        print("self.num_anchors:", self.num_anchors_last)
+        print("self.num_anchors_last:", self.num_anchors_last)
 
         # Initialize output heads that are applied to each feature map from the backbone.
         for n_boxes, out_ch in zip(anchors.num_boxes_per_fmap, self.feature_extractor.out_channels):
@@ -80,7 +80,6 @@ class RetinaNet(nn.Module):
             for layer in layers:
                 for param in layer:
                     if hasattr(param, "bias"):
-                        print("init weight")
                         nn.init.normal_(param.bias.data[:], b, sigma)
                         nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
                 # for param, layer_param in zip(layer.parameters(), layer):
