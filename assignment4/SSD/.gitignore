@@ -4,10 +4,12 @@
 *.m4a
 *.mkv
 *.mp4
+*.png
 
 # Directories
 .cache/
 logs/
+.data/tdt4265_2022_updated/images/train/
 
 .vscode
 __pycache__
