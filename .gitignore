@@ -1,2 +1,5 @@
 **/__pycache__/**
 *.png
+assignment4/SSD/data/tdt4265_2022_updated/train_annotations.json
+assignment4/SSD/data/tdt4265_2022_updated/val_annotations.json
+assignment4/SSD/data/tdt4265_updated/dataset.zip
