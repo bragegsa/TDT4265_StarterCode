@@ -4,6 +4,7 @@
 *.m4a
 *.mkv
 *.mp4
+*.png
 
 # Directories
 .cache/
