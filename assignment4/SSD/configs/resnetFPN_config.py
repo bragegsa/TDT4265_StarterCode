@@ -1,7 +1,7 @@
 from ssd.modeling import AnchorBoxes
 from ssd.modeling.backbones import resnetFPN
 from tops.config import LazyCall as L
-from .tdt4265_augmented_config import (
+from .tdt4265_augmented_2_config import (
     train,
     optimizer,
     schedulers,

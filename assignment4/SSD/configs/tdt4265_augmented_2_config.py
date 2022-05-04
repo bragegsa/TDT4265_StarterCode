@@ -16,13 +16,12 @@ train.image_channels = 3
 model.num_classes = 8 + 1  
 
 train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
-    L(RandomSampleCrop)(),
     L(ToTensor)(),
     L(RandomHorizontalFlip)(),
     L(Resize)(imshape="${train.imshape}"),
     L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
+    L(ColorJitter)()
 ])
-
 
 val_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
     L(ToTensor)(),
