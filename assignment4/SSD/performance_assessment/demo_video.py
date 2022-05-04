@@ -18,6 +18,8 @@ from pathlib import Path
 @click.argument("video_path", type=click.Path(dir_okay=True, path_type=str))
 @click.argument("output_path", type=click.Path(dir_okay=True, path_type=str))
 @click.option("-s", "--score_threshold", type=click.FloatRange(min=0, max=1), default=.5)
+
+
 def run_demo(config_path: str, score_threshold: float, video_path: str, output_path: str):
     cfg = utils.load_config(config_path)
     model = tops.to_cuda(instantiate(cfg.model))
