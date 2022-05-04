@@ -8,6 +8,7 @@ from ssd.data.transforms import (
     GroundTruthBoxesToAnchors, RandomHorizontalFlip, RandomSampleCrop, ColorJitter)
 from .ssd300 import train, optimizer, schedulers, backbone, model, data_train, data_val, loss_objective
 from .utils import get_dataset_dir
+from ssd.modeling import AnchorBoxes
 
 # Keep the model, except change the backbone and number of classes
 train.imshape = (128, 1024)
