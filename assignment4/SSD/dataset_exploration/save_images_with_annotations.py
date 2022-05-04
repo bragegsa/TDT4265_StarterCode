@@ -11,6 +11,8 @@ from tqdm import tqdm
 total_labels = [0]*9
 empty_images = 0
 total_area = [0]*9
+total_aspect_ratios = [0]*9
+
 
 def get_config(config_path):
     cfg = LazyConfig.load(config_path)
@@ -55,9 +57,11 @@ def visualize_boxes_on_image(batch, label_map):
         height = box[3] - box[1]
         width = box[2] - box[0]
         area = height * width
+        aspect_ratio = width/height
 
         # Added an area counter
         total_area[i] += area
+        total_aspect_ratios[i] += aspect_ratio
 
         # Added a label counter
         total_labels[i] += 1
@@ -74,8 +78,7 @@ def create_viz_image(batch, label_map):
     image_without_annotations = convert_image_to_hwc_byte(batch["image"])
     image_with_annotations = visualize_boxes_on_image(batch, label_map)
 
-    # We concatinate in the height axis, so that the images are placed on top of
-    # each other
+    # We concatinate in the height axis, so that the images are placed on top of each other
     concatinated_image = np.concatenate([
         image_without_annotations,
         image_with_annotations,
@@ -105,21 +108,25 @@ def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_vis
 
 
 def print_total_labels(num_images_to_visualize):
-    # Printing total number of detected objects, total number of each object and percentage of total objects for each class.
-    
-    labels_dict = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_percentages = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_area = {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    # Printing total number of detected objects, total number of each object 
+    # and percentage of total objects for each class.
+
+    labels_dict =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_percentages =    {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_area =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_aspect_ratios =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     
     total_label_count = np.sum(total_labels)
 
-    for key, num, area in zip(labels_dict, total_labels, total_area):
+    for key, num, area, aspect_ratios in zip(labels_dict, total_labels, total_area, total_aspect_ratios):
         labels_dict[key] = num
         labels_percentages[key] = str(round(num/total_label_count*100, 0)) + ("%")
         if num:
             labels_area[key] = round(area/num, 0)
+            labels_aspect_ratios[key] = round(aspect_ratios/num, 2)
         else:
             labels_area[key] = "No area"
+            labels_aspect_ratios[key] = "No apect ratio"
         
     print()
     print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
@@ -127,6 +134,7 @@ def print_total_labels(num_images_to_visualize):
     print("Percentage of detected objects per class:", labels_percentages, "\n")
     print("The total number of empty images are", empty_images, "which is", round(empty_images/num_images_to_visualize, 2)*100, "percent of all the images. \n")
     print("Average area (in pixels) for each class are", labels_area, "\n")
+    print("Average aspect ratio for each class are", labels_aspect_ratios, "\n")
 
 
 def main():
