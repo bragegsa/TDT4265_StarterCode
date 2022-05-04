@@ -51,10 +51,6 @@ def visualize_boxes_on_image(batch, label_map):
     boxes = convert_boxes_coords_to_pixel_coords(batch["boxes"], batch["width"], batch["height"])
     labels = batch["labels"][0].cpu().numpy().tolist()
 
-    # Added a label counter
-    # for i in labels:
-    #     total_labels[i] += 1
-
     for box, i in zip(boxes, labels):
         height = box[3] - box[1]
         width = box[2] - box[0]
