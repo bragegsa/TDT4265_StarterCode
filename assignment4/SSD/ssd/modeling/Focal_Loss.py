@@ -21,13 +21,15 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
         neg_pos_ratio:  the ratio between the negative examples and positive examples.
     """
 
+
+    a_k = alpha
     pk = F.softmax(loss, dim=1)
     one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
-    alpha = torch.tensor(alpha).reshape((1, 9, 1)).to(pk.device)
+    a_k = torch.tensor(a_k).reshape((1, 9, 1)).to(pk.device)
 
     # FL = -ak * (1-pk)^y * y * log(pk)
     # focal = -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
-    focal = -alpha * torch.pow(1.0-pk, gamma) * torch.log(pk)
+    focal = -a_k * torch.pow(1.0-pk, gamma) * torch.log(pk)
     loss_encoded = one_hot_encoded * focal
     focal_loss = loss_encoded.sum(dim=1).mean()
 
@@ -75,6 +77,7 @@ class FocalLoss(nn.Module):
         gt_bbox = gt_bbox.transpose(1, 2).contiguous() # reshape to [batch_size, 4, num_anchors]
 
         # Claculating focal loss:
+        print("Alpha:", self.alpha)
         focal_loss = calculate_focal_loss(confs, gt_labels, self.alpha) 
 
         pos_mask = (gt_labels > 0).unsqueeze(1).repeat(1, 4, 1)

@@ -108,7 +108,7 @@ def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_vis
         cv2.imwrite(filepath, viz_image[:, :, ::-1])
 
 
-def print_total_labels(num_images_to_visualize):
+def print_information(num_images_to_visualize):
     # Printing total number of detected objects, total number of each object 
     # and percentage of total objects for each class.
 
@@ -147,7 +147,8 @@ def print_total_labels(num_images_to_visualize):
 
 
 def main():
-    config_path = "configs/tdt4265.py"
+    # config_path = "configs/tdt4265.py"
+    config_path = "configs/tdt4265_augmented_2_config.py"
     cfg = get_config(config_path)
     dataset_to_visualize = "train"  # or "val"
     num_images_to_visualize = 1000  # Increase this if you want to save more images
@@ -156,7 +157,7 @@ def main():
     save_folder = os.path.join("dataset_exploration", "annotation_images")
     save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize)
 
-    print_total_labels(num_images_to_visualize)
+    print_information(num_images_to_visualize)
 
 
 if __name__ == '__main__':
