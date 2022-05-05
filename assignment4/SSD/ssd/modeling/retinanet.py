@@ -78,6 +78,8 @@ class RetinaNet(nn.Module):
             b_final = -torch.log(torch.tensor((1-pi)/pi))
             
             for layer in layers:
+                for param in layer.parameters():
+                    if param.dim() > 1: nn.init.xavier_uniform_(param)
                 for param in layer:
                     if hasattr(param, "bias"):
                         if len(param.bias)%9 == 0:
@@ -86,7 +88,7 @@ class RetinaNet(nn.Module):
                             # nn.init.constant_(param.bias.data[:], b)
                             nn.init.constant_(param.bias.data[:int(len(param.bias)/9)], b_background)
                         else:
-                            nn.init.normal_(param.bias.data[:], b, sigma)
+                            nn.init.zeros_(param.bias.data[:])
                         # print("param.bias.data[:]", param.bias.data[:])
                         # print("length", len(param.bias))
                         # nn.init.normal_(param.bias.data[:], b, sigma)

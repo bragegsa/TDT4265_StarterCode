@@ -1,4 +1,4 @@
-from .exploration_knowledge_config import (
+from .retinanet_init_weights_config import (
     train,
     optimizer,
     schedulers,
