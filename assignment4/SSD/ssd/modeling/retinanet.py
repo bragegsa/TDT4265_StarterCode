@@ -5,17 +5,17 @@ from torchvision.ops import batched_nms
 
 
 class RetinaNet(nn.Module):
-    def __init__(self, 
+    def __init__(self,
             feature_extractor: nn.Module,
             anchors,
             loss_objective,
             num_classes: int,
             anchor_prob_initialization: bool):
+        """Implements the SSD network.
+        Backbone outputs a list of features,
+        which are gressed to SSD output with regression/classification heads.
+        """
         super().__init__()
-        """
-            Implements the SSD network.
-            Backbone outputs a list of features, which are gressed to SSD output with regression/classification heads.
-        """
 
         self.feature_extractor = feature_extractor
         self.loss_func = loss_objective
@@ -82,19 +82,9 @@ class RetinaNet(nn.Module):
                     if hasattr(param, "bias"):
                         nn.init.normal_(param.bias.data[:], b, sigma)
                         nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
-                # for param, layer_param in zip(layer.parameters(), layer):
-                #     if hasattr(layer_param, "bias"):
-                #         print("init weight")
-                #         nn.init.normal_(layer_param.bias.data[:], b, sigma)
-                #         nn.init.constant_(layer_param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
-                #     else: # This never happens
-                #         if param.dim() > 1: 
-                #             nn.init.xavier_uniform_(param)
-                #             print("default") 
 
             nn.init.constant_(self.classification_heads[-1][-1].bias, b_final)
             nn.init.constant_(self.classification_heads[-1][-1].bias.data[:self.num_anchors_last], b_background)
-            # print("self.classification_heads[-1].bias:", self.classification_heads[-1][-1].bias)
 
         else:
             print(" --- Weights not initialized ---")
@@ -117,9 +107,7 @@ class RetinaNet(nn.Module):
 
     
     def forward(self, img: torch.Tensor, **kwargs):
-        """
-            img: shape: NCHW
-        """
+        """img: shape: NCHW"""
         if not self.training:
             return self.forward_test(img, **kwargs)
         features = self.feature_extractor(img)
@@ -129,9 +117,8 @@ class RetinaNet(nn.Module):
             img: torch.Tensor,
             imshape=None,
             nms_iou_threshold=0.5, max_output=200, score_threshold=0.05):
-        """
-            img: shape: NCHW
-            nms_iou_threshold, max_output is only used for inference/evaluation, not for training
+        """img: shape: NCHW
+        nms_iou_threshold, max_output is only used for inference/evaluation, not for training
         """
         features = self.feature_extractor(img)
         bbox_delta, confs = self.regress_boxes(features)
@@ -152,9 +139,8 @@ class RetinaNet(nn.Module):
 def filter_predictions(
         boxes_ltrb: torch.Tensor, confs: torch.Tensor,
         nms_iou_threshold: float, max_output: int, score_threshold: float):
-        """
-            boxes_ltrb: shape [N, 4]
-            confs: shape [N, num_classes]
+        """boxes_ltrb: shape [N, 4]
+        confs: shape [N, num_classes]
         """
         assert 0 <= nms_iou_threshold <= 1
         assert max_output > 0
