@@ -5,15 +5,16 @@ from .retinanet_init_weights_config import (
     loss_objective,
     model,
     backbone,
-    data_train,
-    data_val,
-    train_cpu_transform,
-    val_cpu_transform,
+    # data_train,
+    # data_val,
+    # train_cpu_transform,
+    # val_cpu_transform,
     gpu_transform,
     label_map,
 )
 from tops.config import LazyCall as L
 from ssd.modeling import AnchorBoxes
+from .tdt4265_augmented_3_config import train_cpu_transform, val_cpu_transform, data_train, data_val
 
 anchors = L(AnchorBoxes)(
     # Parameters:
