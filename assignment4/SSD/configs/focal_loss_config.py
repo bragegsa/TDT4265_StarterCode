@@ -1,4 +1,4 @@
-from .resnetFPN_config import (
+from .resnetFPN_2_config import (
     train,
     optimizer,
     schedulers,
