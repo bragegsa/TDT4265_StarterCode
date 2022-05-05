@@ -22,28 +22,30 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
     """
 
 
-    # ak = [alpha]
+    ak = [alpha]
     # print("ak:", ak)
-    # pk = F.softmax(loss, dim=1)
-    # one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
-    # ak = torch.tensor(ak).reshape((1, 9, 1)).to(pk.device)
+    pk = F.softmax(loss, dim=1)
+    yk = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
+    ak = torch.tensor(ak).reshape((1, 9, 1)).to(pk.device)
 
-    # # FL = -ak * (1-pk)^y * y * log(pk)
-    # # FL = SUM -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
-    # focal_loss = one_hot_encoded * (-ak * torch.pow(1.0-pk, gamma) * torch.log(pk))
-    # focal_loss = focal_loss.sum(dim=1).mean()
+    # FL = -ak * (1-pk)^y * yk * log(pk)
+    # FL = SUM -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
+    focal_loss = -ak * torch.pow(1.0-pk, gamma) * yk * F.log_softmax(loss, dim=1)
+    focal_loss = focal_loss.sum(dim=1).mean()
 
-    hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
+    # ---------------
 
-    log_pk = F.log_softmax(loss, dim=1)
-    p_k = F.softmax(loss, dim=1)
+    # hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
 
-    alpha = torch.tensor([[10] + 8*[1000]]).reshape((1, 9, 1)).to(p_k.device)
+    # log_pk = F.log_softmax(loss, dim=1)
+    # p_k = F.softmax(loss, dim=1)
 
-    weight = torch.pow(1.0-p_k, gamma)
-    focal = -alpha * weight * log_pk
-    loss_tmp = hot_encoded*focal
-    focal_loss = loss_tmp.sum(dim=1).mean()
+    # alpha = torch.tensor([[10] + 8*[1000]]).reshape((1, 9, 1)).to(p_k.device)
+
+    # weight = torch.pow(1.0-p_k, gamma)
+    # focal = -alpha * weight * log_pk
+    # loss_tmp = hot_encoded*focal
+    # focal_loss = loss_tmp.sum(dim=1).mean()
 
     return focal_loss
 
