@@ -81,20 +81,10 @@ class RetinaNet(nn.Module):
                 for param in layer:
                     if hasattr(param, "bias"):
                         nn.init.normal_(param.bias.data[:], b, sigma)
-                        nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
-                # for param, layer_param in zip(layer.parameters(), layer):
-                #     if hasattr(layer_param, "bias"):
-                #         print("init weight")
-                #         nn.init.normal_(layer_param.bias.data[:], b, sigma)
-                #         nn.init.constant_(layer_param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
-                #     else: # This never happens
-                #         if param.dim() > 1: 
-                #             nn.init.xavier_uniform_(param)
-                #             print("default") 
+                        # nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
 
             nn.init.constant_(self.classification_heads[-1][-1].bias, b_final)
-            nn.init.constant_(self.classification_heads[-1][-1].bias.data[:self.num_anchors_last], b_background)
-            # print("self.classification_heads[-1].bias:", self.classification_heads[-1][-1].bias)
+            # nn.init.constant_(self.classification_heads[-1][-1].bias.data[:self.num_anchors_last], b_background)
 
         else:
             print(" --- Weights not initialized ---")
