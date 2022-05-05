@@ -86,11 +86,13 @@ class RetinaNet(nn.Module):
                             # nn.init.constant_(param.bias.data[:], b)
                             nn.init.constant_(param.bias.data[:int(len(param.bias)/9)], b_background)
                         else:
-                            nn.init.normal_(param.bias.data[:], b, sigma)
+                            nn.init.zeros_(param.bias.data[:])
                         # print("param.bias.data[:]", param.bias.data[:])
                         # print("length", len(param.bias))
                         # nn.init.normal_(param.bias.data[:], b, sigma)
                         # nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
+                for param in layer.parameters():
+                    if param.dim() > 1: nn.init.xavier_uniform_(param)
 
             # print("self.classification_heads[-1][-1].bias", self.classification_heads[-1][-1].bias)
             nn.init.constant_(self.classification_heads[-1][-1].bias, b_final)
