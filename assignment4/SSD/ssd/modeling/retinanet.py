@@ -83,9 +83,10 @@ class RetinaNet(nn.Module):
                         if len(param.bias)%9 == 0:
                             # print("End layer length:", len(param.bias))
                             nn.init.normal_(param.bias.data[:], b, sigma)
+                            # nn.init.constant_(param.bias.data[:], b)
                             nn.init.constant_(param.bias.data[:int(len(param.bias)/9)], b_background)
-                        # else:
-                        #     nn.init.normal_(param.bias.data[:], b, sigma)
+                        else:
+                            nn.init.normal_(param.bias.data[:], b, sigma)
                         # print("param.bias.data[:]", param.bias.data[:])
                         # print("length", len(param.bias))
                         # nn.init.normal_(param.bias.data[:], b, sigma)
