@@ -70,7 +70,7 @@ class FocalLoss(nn.Module):
         """
         gt_bbox = gt_bbox.transpose(1, 2).contiguous() # reshape to [batch_size, 4, num_anchors]
 
-        # Claculating focal loss:
+        # Calculating focal loss:
         # print("Alpha:", self.alpha)
         focal_loss = calculate_focal_loss(confs, gt_labels, self.alpha) 
         pos_mask = (gt_labels > 0).unsqueeze(1).repeat(1, 4, 1)
