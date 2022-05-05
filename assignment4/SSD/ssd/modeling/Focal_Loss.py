@@ -22,17 +22,16 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
     """
 
 
-    ak = alpha
+    ak = torch.tensor(alpha)
     # print("ak:", ak)
     pk = F.softmax(loss, dim=1)
     one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
-    ak = torch.tensor([ak]).reshape((1, 9, 1)).to(pk.device)
+    # ak = torch.tensor([ak]).reshape((1, 9, 1)).to(pk.device)
 
     # FL = -ak * (1-pk)^y * y * log(pk)
-    # focal = -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
-    focal = -ak * torch.pow(1.0-pk, gamma) * torch.log(pk)
-    loss_encoded = one_hot_encoded * focal
-    focal_loss = loss_encoded.sum(dim=1).mean()
+    # FL = SUM -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
+    focal_loss = one_hot_encoded * (-ak * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk))
+    focal_loss = focal_loss.sum(dim=1).mean()
 
     return focal_loss
 
@@ -80,7 +79,6 @@ class FocalLoss(nn.Module):
         # Claculating focal loss:
         # print("Alpha:", self.alpha)
         focal_loss = calculate_focal_loss(confs, gt_labels, self.alpha) 
-
         pos_mask = (gt_labels > 0).unsqueeze(1).repeat(1, 4, 1)
         bbox_delta = bbox_delta[pos_mask]
         gt_locations = self._loc_vec(gt_bbox)
