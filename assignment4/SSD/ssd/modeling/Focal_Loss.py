@@ -26,7 +26,8 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
     alpha = torch.tensor(alpha).reshape((1, 9, 1)).to(pk.device)
 
     # FL = -ak * (1-pk)^y * y * log(pk)
-    focal = -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
+    # focal = -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
+    focal = -alpha * torch.pow(1.0-pk, gamma) * torch.log(pk)
     loss_encoded = one_hot_encoded * focal
     focal_loss = loss_encoded.sum(dim=1).mean()
 
