@@ -22,16 +22,28 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
     """
 
 
-    ak = [alpha]
-    print("ak:", ak)
-    pk = F.softmax(loss, dim=1)
-    one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
-    ak = torch.tensor(ak).reshape((1, 9, 1)).to(pk.device)
+    # ak = [alpha]
+    # print("ak:", ak)
+    # pk = F.softmax(loss, dim=1)
+    # one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
+    # ak = torch.tensor(ak).reshape((1, 9, 1)).to(pk.device)
 
-    # FL = -ak * (1-pk)^y * y * log(pk)
-    # FL = SUM -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
-    focal_loss = one_hot_encoded * (-ak * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk))
-    focal_loss = focal_loss.sum(dim=1).mean()
+    # # FL = -ak * (1-pk)^y * y * log(pk)
+    # # FL = SUM -alpha * torch.pow(1.0-pk, gamma) * gamma * torch.log(pk)
+    # focal_loss = one_hot_encoded * (-ak * torch.pow(1.0-pk, gamma) * torch.log(pk))
+    # focal_loss = focal_loss.sum(dim=1).mean()
+
+    hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
+
+    log_pk = F.log_softmax(loss, dim=1)
+    p_k = F.softmax(loss, dim=1)
+
+    alpha = torch.tensor([[10] + 8*[1000]]).reshape((1, 9, 1)).to(p_k.device)
+
+    weight = torch.pow(1.0-p_k, gamma)
+    focal = -alpha * weight * log_pk
+    loss_tmp = hot_encoded*focal
+    focal_loss = loss_tmp.sum(dim=1).mean()
 
     return focal_loss
 
@@ -86,7 +98,6 @@ class FocalLoss(nn.Module):
         regression_loss = F.smooth_l1_loss(bbox_delta, gt_locations, reduction="sum")
         num_pos = gt_locations.shape[0]/4
         total_loss = regression_loss/num_pos + focal_loss
-        classification_loss = focal_loss
         to_log = dict(
             regression_loss=regression_loss/num_pos,
             classification_loss=focal_loss,
