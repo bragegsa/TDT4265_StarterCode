@@ -81,8 +81,9 @@ class RetinaNet(nn.Module):
                 for param in layer:
                     if hasattr(param, "bias"):
                         if len(param.bias)%9 == 0:
+                            print("End layer length:", len(param.bias))
                             nn.init.normal_(param.bias.data[:], b, sigma)
-                            nn.init.constant_(param.bias.data[:len(param.bias)/9], b_background)
+                            nn.init.constant_(param.bias.data[:int(len(param.bias)/9)], b_background)
                         else:
                             nn.init.normal_(param.bias.data[:], b, sigma)
                         # print("param.bias.data[:]", param.bias.data[:])
