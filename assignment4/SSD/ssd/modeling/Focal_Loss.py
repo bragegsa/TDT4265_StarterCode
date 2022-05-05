@@ -23,7 +23,7 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
 
 
     ak = alpha
-    print("ak:", ak)
+    # print("ak:", ak)
     pk = F.softmax(loss, dim=1)
     one_hot_encoded = F.one_hot(labels, num_classes=loss.shape[1]).transpose(1,2)
     ak = torch.tensor([ak]).reshape((1, 9, 1)).to(pk.device)
