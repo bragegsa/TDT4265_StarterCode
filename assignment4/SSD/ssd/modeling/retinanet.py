@@ -80,11 +80,23 @@ class RetinaNet(nn.Module):
             for layer in layers:
                 for param in layer:
                     if hasattr(param, "bias"):
-                        nn.init.normal_(param.bias.data[:], b, sigma)
-                        nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
+                        if len(param.bias)%9 == 0:
+                            # print("End layer length:", len(param.bias))
+                            nn.init.normal_(param.bias.data[:], b, sigma)
+                            # nn.init.constant_(param.bias.data[:], b)
+                            nn.init.constant_(param.bias.data[:int(len(param.bias)/9)], b_background)
+                        else:
+                            nn.init.normal_(param.bias.data[:], b, sigma)
+                        # print("param.bias.data[:]", param.bias.data[:])
+                        # print("length", len(param.bias))
+                        # nn.init.normal_(param.bias.data[:], b, sigma)
+                        # nn.init.constant_(param.bias.data[:self.num_anchors_last], b_background) # A bit unsure about this one
 
+            # print("self.classification_heads[-1][-1].bias", self.classification_heads[-1][-1].bias)
             nn.init.constant_(self.classification_heads[-1][-1].bias, b_final)
+            # print("self.classification_heads[-1][-1].bias", self.classification_heads[-1][-1].bias)
             nn.init.constant_(self.classification_heads[-1][-1].bias.data[:self.num_anchors_last], b_background)
+            # print("self.classification_heads[-1][-1].bias", self.classification_heads[-1][-1].bias)
 
         else:
             print(" --- Weights not initialized ---")
