@@ -12,7 +12,8 @@ from tqdm import tqdm
 # Used to count the total number of labels
 total_labels = [0]*9
 empty_images = 0
-total_area = [[] for _ in range(10)]
+total_widths = [[] for _ in range(10)]
+total_heights = [[] for _ in range(10)]
 total_aspect_ratios = [[] for _ in range(10)]
 
 
@@ -58,10 +59,10 @@ def visualize_boxes_on_image(batch, label_map):
     for box, i in zip(boxes, labels):
         height = box[3] - box[1]
         width = box[2] - box[0]
-        area = height * width
         aspect_ratio = width/height
 
-        total_area[i].append(area)
+        total_widths[i].append(width)
+        total_heights[i].append(height)
         total_aspect_ratios[i].append(aspect_ratio)
 
         # Added a label counter
@@ -112,38 +113,46 @@ def print_information(num_images_to_visualize):
     # Printing total number of detected objects, total number of each object 
     # and percentage of total objects for each class.
 
-    labels_dict =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_percentages =    {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_area_mean =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_area_std =           {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_aspect_ratios_mean =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
-    labels_aspect_ratios_std =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_dict =               {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_percentages =        {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_width_mean =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_width_std =          {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_height_mean =        {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_height_std =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_aspect_ratio_mean =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_aspect_ratio_std =   {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
 
     total_label_count = np.sum(total_labels)
 
-    for key, labels, areas, aspect_ratios in zip(labels_dict, total_labels, total_area, total_aspect_ratios):
+    for key, labels, widths, heights, aspect_ratios in zip(labels_dict, total_labels, total_widths, total_heights, total_aspect_ratios):
         labels_dict[key] = labels
         labels_percentages[key] = str(round(labels/total_label_count*100, 0)) + ("%")
         if labels:
-            labels_area_mean[key] = round(np.mean(areas), 1)
-            labels_area_std[key] = round(np.std(areas), 1)
-            labels_aspect_ratios_mean[key] = round(np.mean(aspect_ratios), 1)
-            labels_aspect_ratios_std[key] = round(np.std(aspect_ratios), 1)
+            labels_width_mean[key] = round(np.mean(widths), 1)
+            labels_width_std[key] = round(np.std(widths), 1)
+            labels_height_mean[key] = round(np.mean(heights), 1)
+            labels_height_std[key] = round(np.std(heights), 1)
+            labels_aspect_ratio_mean[key] = round(np.mean(aspect_ratios), 1)
+            labels_aspect_ratio_std[key] = round(np.std(aspect_ratios), 1)
         else:
-            labels_area_mean[key] = "No area"
-            labels_area_std[key] = "No area"
-            labels_aspect_ratios_mean[key] = "No aspect ratio"
-            labels_aspect_ratios_std[key] = "No aspect ratio"
+            labels_width_mean[key] = "No width"
+            labels_width_std[key] = "No width"
+            labels_height_mean[key] = "No height"
+            labels_height_std[key] = "No height"
+            labels_aspect_ratio_mean[key] = "No aspect ratio"
+            labels_aspect_ratio_std[key] = "No aspect ratio"
         
     print()
     print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
     print("Total labels per class:", labels_dict, "\n")
     print("Percentage of detected objects per class:", labels_percentages, "\n")
     print("The total number of empty images are", empty_images, "which is", round(empty_images/num_images_to_visualize, 2)*100, "percent of all the images. \n")
-    print("Average area (in pixels) for each class are", labels_area_mean, "\n")
-    print("The standard deviation in area (in pixels) for each class are", labels_area_std, "\n")
-    print("Average aspect ratio for each class are", labels_aspect_ratios_mean, "\n")
-    print("The standard deviation in aspect ratio for each class are", labels_aspect_ratios_std, "\n")
+    print("Average width (in pixels) for each class are", labels_width_mean, "\n")
+    print("The standard deviation in width (in pixels) for each class are", labels_width_std, "\n")
+    print("Average height (in pixels) for each class are", labels_height_mean, "\n")
+    print("The standard deviation in height (in pixels) for each class are", labels_height_std, "\n")
+    print("Average aspect ratio for each class are", labels_aspect_ratio_mean, "\n")
+    print("The standard deviation in aspect ratio for each class are", labels_aspect_ratio_std, "\n")
 
 
 def main():
