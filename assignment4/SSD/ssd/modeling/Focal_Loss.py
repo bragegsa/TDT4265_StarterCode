@@ -8,8 +8,7 @@ import torch.nn.functional as F
 # https://pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html
 
 def calculate_focal_loss(loss, labels, alpha, gamma=2):
-    """
-    It used to suppress the presence of a large number of negative prediction.
+    """It used to suppress the presence of a large number of negative prediction.
     It works on image level not batch level.
     For any example/image, it keeps all the positive predictions and
      cut the number of negative predictions to make sure the ratio
@@ -36,8 +35,7 @@ def calculate_focal_loss(loss, labels, alpha, gamma=2):
 
 
 class FocalLoss(nn.Module):
-    """
-        Implements the loss as the sum of the followings:
+    """Implements the loss as the sum of the followings:
         1. Confidence Loss: All labels, with hard negative mining
         2. Localization Loss: Only on positive labels
         Suppose input dboxes has the shape 8732x4
@@ -56,9 +54,7 @@ class FocalLoss(nn.Module):
 
 
     def _loc_vec(self, loc):
-        """
-            Generate Location Vectors
-        """
+        """Generate Location Vectors"""
         gxy = self.scale_xy*(loc[:, :2, :] - self.anchors[:, :2, :])/self.anchors[:, 2:, ]
         gwh = self.scale_wh*(loc[:, 2:, :]/self.anchors[:, 2:, :]).log()
         return torch.cat((gxy, gwh), dim=1).contiguous()
@@ -66,8 +62,7 @@ class FocalLoss(nn.Module):
     def forward(self,
             bbox_delta: torch.FloatTensor, confs: torch.FloatTensor,
             gt_bbox: torch.FloatTensor, gt_labels: torch.LongTensor):
-        """
-        NA is the number of anchor boxes (by default this is 8732)
+        """NA is the number of anchor boxes (by default this is 8732)
             bbox_delta: [batch_size, 4, num_anchors]
             confs: [batch_size, num_classes, num_anchors]
             gt_bbox: [batch_size, num_anchors, 4]
