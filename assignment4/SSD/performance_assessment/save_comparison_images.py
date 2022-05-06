@@ -126,6 +126,8 @@ def get_save_folder_name(cfg, dataset_to_visualize):
 @click.option("--train", default=False, is_flag=True, help="Use the train dataset instead of val")
 @click.option("-n", "--num_images", default=500, type=int, help="The max number of images to save")
 @click.option("-c", "--conf_threshold", default=0.3, type=float, help="The confidence threshold for predictions")
+
+
 def main(config_path, train, num_images, conf_threshold):
     cfg = get_config(config_path)
     model = get_trained_model(cfg)

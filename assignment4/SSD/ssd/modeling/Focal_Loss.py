@@ -59,16 +59,18 @@ class FocalLoss(nn.Module):
         gwh = self.scale_wh*(loc[:, 2:, :]/self.anchors[:, 2:, :]).log()
         return torch.cat((gxy, gwh), dim=1).contiguous()
     
+
     def forward(self,
             bbox_delta: torch.FloatTensor, confs: torch.FloatTensor,
             gt_bbox: torch.FloatTensor, gt_labels: torch.LongTensor):
         """NA is the number of anchor boxes (by default this is 8732)
             bbox_delta: [batch_size, 4, num_anchors]
-            confs: [batch_size, num_classes, num_anchors]
-            gt_bbox: [batch_size, num_anchors, 4]
-            gt_label = [batch_size, num_anchors]
+            confs:      [batch_size, num_classes, num_anchors]
+            gt_bbox:    [batch_size, num_anchors, 4]
+            gt_label =  [batch_size, num_anchors]
         """
-        gt_bbox = gt_bbox.transpose(1, 2).contiguous() # reshape to [batch_size, 4, num_anchors]
+        # reshape to [batch_size, 4, num_anchors]
+        gt_bbox = gt_bbox.transpose(1, 2).contiguous()
 
         # Calculating focal loss:
         # print("Alpha:", self.alpha)

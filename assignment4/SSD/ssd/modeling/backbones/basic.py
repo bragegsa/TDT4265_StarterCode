@@ -25,15 +25,15 @@ class BasicModel(torch.nn.Module):
         self.map1 = nn.Sequential(
 
             # Resolution 38x38
-            nn.Conv2d(image_channels, 32, 3, 1, 1),
+            nn.Conv2d(in_channels=image_channels, out_channels=32, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-            nn.Conv2d(32, 64, 3, 1, 1),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             # nn.MaxPool2d(2, 2),
-            nn.Conv2d(64, 64, 3, 1, 1),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(64, output_channels[0], 3, 2, 1),
+            nn.Conv2d(in_channels=64, out_channels=output_channels[0], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -41,9 +41,9 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 19x19
             nn.ReLU(),
-            nn.Conv2d(output_channels[0], 128, 3, 1, 1),
+            nn.Conv2d(in_channels=output_channels[0], out_channels=128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(128, output_channels[1], 3, 2, 1),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[1], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -51,9 +51,9 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 10x10
             nn.ReLU(),
-            nn.Conv2d(output_channels[1], 256, 3, 1, 1),
+            nn.Conv2d(in_channels=output_channels[1], out_channels=256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(256, output_channels[2], 3, 2, 1),
+            nn.Conv2d(in_channels=256, out_channels=output_channels[2], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -61,10 +61,10 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 5x5
             nn.ReLU(),
-            nn.Conv2d(output_channels[2], 128, 3, 1, 1),
+            nn.Conv2d(in_channels=output_channels[2], out_channels=128, kernel_size=3, stride=1, padding=1),
             # nn.Conv2d(output_channels[2], 256, 3, 1, 1),
             nn.ReLU(),
-            nn.Conv2d(128, output_channels[3], 3, 2, 1),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[3], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -72,10 +72,10 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 3x3
             nn.ReLU(),
-            nn.Conv2d(output_channels[3], 128, 3, 1, 1),
+            nn.Conv2d(in_channels=output_channels[3], out_channels=128, kernel_size=3, stride=1, padding=1),
             # nn.Conv2d(output_channels[3], 256, 3, 1, 1),
             nn.ReLU(),
-            nn.Conv2d(128, output_channels[4], 3, 2, 1),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[4], kernel_size=3, stride=2, padding=1),
             nn.ReLU()
         )
 
@@ -83,9 +83,9 @@ class BasicModel(torch.nn.Module):
 
             # Resolution 1x1
             nn.ReLU(),
-            nn.Conv2d(output_channels[4], 128, 2, 1, 1),
+            nn.Conv2d(in_channels=output_channels[4], out_channels=128, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(128, output_channels[5], 2, 2, 0),
+            nn.Conv2d(in_channels=128, out_channels=output_channels[5], kernel_size=2, stride=2, padding=0),
             nn.ReLU()
         )
 
