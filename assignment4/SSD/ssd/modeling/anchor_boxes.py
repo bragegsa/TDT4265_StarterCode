@@ -31,27 +31,41 @@ class AnchorBoxes(object):
         # Calculation method slightly different from paper
 
         anchors = []
-        # size of feature and number of feature
+        # Iterate through each feature map of size [fH, fW] with index fidx
         for fidx, [fH, fW] in enumerate(feature_sizes):
             bbox_sizes = []
+            # Set minimum box heights and widths with min_sizes relative to image
             h_min = min_sizes[fidx][0] / image_shape[0]
             w_min = min_sizes[fidx][1] / image_shape[1]
+            # Append the minimum box sizes to bbox_sizes
             bbox_sizes.append((w_min, h_min))
+            # Set maximum box heights and widths as:
+            # the square root of the product of current min_sizes and min_sizes in the next feature map
             h_max = sqrt(min_sizes[fidx][0]*min_sizes[fidx+1][0]) / image_shape[0]
             w_max = sqrt(min_sizes[fidx][1]*min_sizes[fidx+1][1]) / image_shape[1]
+            # Append the maximum box sizes to bbox_sizes
             bbox_sizes.append((w_max, h_max))
+            # Iterate through the aspect ratios r for current feature map
             for r in aspect_ratios[fidx]:
+                # Scale height and width to get desired aspect ratio r
                 h = h_min*sqrt(r)
                 w = w_min/sqrt(r)
+                # Add scaled boxes to bbox_sizes
                 bbox_sizes.append((w_min/sqrt(r), h_min*sqrt(r)))
                 bbox_sizes.append((w_min*sqrt(r), h_min/sqrt(r)))
+            
+            # Set scales for feature points according to image size and desired stride distances
             scale_y = image_shape[0] / strides[fidx][0]
             scale_x = image_shape[1] / strides[fidx][1]
+            # Iterate through anchor boxes in bbox_sizes
             for w, h in bbox_sizes:
+                # Iterate through all points i an j in height and width of feature map fidx
                 for i in range(fH):
                     for j in range(fW):
+                        # Scale centers of anchor boxes
                         cx = (j + 0.5)/scale_x
                         cy = (i + 0.5)/scale_y
+                        # Add final scaled centers, widths and heights to anchors
                         anchors.append((cx, cy, w, h))
 
         self.anchors_xywh = torch.tensor(anchors).clamp(min=0, max=1).float()

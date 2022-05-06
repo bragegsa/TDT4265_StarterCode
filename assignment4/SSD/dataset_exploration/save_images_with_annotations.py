@@ -9,9 +9,10 @@ from vizer.draw import draw_boxes
 from ssd import utils
 from tqdm import tqdm
 
+SAVE_IMAGES = False
+
 # Used to count the total number of labels
 total_labels = [0]*9
-empty_images = 0
 total_widths = [[] for _ in range(10)]
 total_heights = [[] for _ in range(10)]
 total_aspect_ratios = [[] for _ in range(10)]
@@ -67,10 +68,6 @@ def visualize_boxes_on_image(batch, label_map):
 
         # Added a label counter
         total_labels[i] += 1
-    
-    # Checking if the image has any objects annotated or not
-    if not(labels):
-        empty_images += 1
 
     image_with_boxes = draw_boxes(image, boxes, labels, class_name_map=label_map)
     return image_with_boxes
@@ -93,7 +90,7 @@ def create_filepath(save_folder, image_id):
     return os.path.join(save_folder, filename)
 
 
-def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize):
+def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize, save_images):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
@@ -106,12 +103,12 @@ def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_vis
         batch = next(dataloader)
         viz_image = create_viz_image(batch, cfg.label_map)
         filepath = create_filepath(save_folder, i)
-        cv2.imwrite(filepath, viz_image[:, :, ::-1])
+        if save_images:
+            cv2.imwrite(filepath, viz_image[:, :, ::-1])
 
 
 def print_information(num_images_to_visualize):
-    # Printing total number of detected objects, total number of each object 
-    # and percentage of total objects for each class.
+    # Printing information about the annotation boxes
 
     labels_dict =               {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_percentages =        {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
@@ -146,7 +143,6 @@ def print_information(num_images_to_visualize):
     print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
     print("Total labels per class:", labels_dict, "\n")
     print("Percentage of detected objects per class:", labels_percentages, "\n")
-    print("The total number of empty images are", empty_images, "which is", round(empty_images/num_images_to_visualize, 2)*100, "percent of all the images. \n")
     print("Average width (in pixels) for each class are", labels_width_mean, "\n")
     print("The standard deviation in width (in pixels) for each class are", labels_width_std, "\n")
     print("Average height (in pixels) for each class are", labels_height_mean, "\n")
@@ -156,15 +152,14 @@ def print_information(num_images_to_visualize):
 
 
 def main():
-    # config_path = "configs/tdt4265.py"
-    config_path = "configs/tdt4265_augmented_2_config.py"
+    config_path = "configs/tdt4265.py"
     cfg = get_config(config_path)
     dataset_to_visualize = "train"  # or "val"
-    num_images_to_visualize = 1000  # Increase this if you want to save more images
+    num_images_to_visualize = 16696  # Increase this if you want to save more images
 
     dataloader = get_dataloader(cfg, dataset_to_visualize)
     save_folder = os.path.join("dataset_exploration", "annotation_images")
-    save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize)
+    save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_visualize, SAVE_IMAGES)
 
     print_information(num_images_to_visualize)
 
