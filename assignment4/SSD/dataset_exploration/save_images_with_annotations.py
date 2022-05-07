@@ -108,14 +108,18 @@ def save_images_with_annotations(dataloader, cfg, save_folder, num_images_to_vis
 
 
 def print_information(num_images_to_visualize):
-    # Printing information about the annotation boxes
+    """# Printing information about the annotation boxes"""
 
     labels_dict =               {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_percentages =        {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_width_mean =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_width_std =          {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_width_min =          {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_width_max =          {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_height_mean =        {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_height_std =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_height_min =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
+    labels_height_max =         {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_aspect_ratio_mean =  {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
     labels_aspect_ratio_std =   {"background": 0, "car": 0, "truck": 0, "bus": 0, "motorcycle": 0, "bicycle": 0, "scooter": 0, "person": 0, "rider": 0}
 
@@ -127,15 +131,23 @@ def print_information(num_images_to_visualize):
         if labels:
             labels_width_mean[key] = round(np.mean(widths), 1)
             labels_width_std[key] = round(np.std(widths), 1)
+            labels_width_min[key] = round(np.min(widths), 1)
+            labels_width_max[key] = round(np.max(widths), 1)
             labels_height_mean[key] = round(np.mean(heights), 1)
             labels_height_std[key] = round(np.std(heights), 1)
+            labels_height_min[key] = round(np.min(heights), 1)
+            labels_height_max[key] = round(np.max(heights), 1)
             labels_aspect_ratio_mean[key] = round(np.mean(aspect_ratios), 1)
             labels_aspect_ratio_std[key] = round(np.std(aspect_ratios), 1)
         else:
             labels_width_mean[key] = "No width"
             labels_width_std[key] = "No width"
+            labels_width_min[key] = "No width"
+            labels_width_max[key] = "No width"
             labels_height_mean[key] = "No height"
             labels_height_std[key] = "No height"
+            labels_height_min[key] = "No height"
+            labels_height_max[key] = "No height"
             labels_aspect_ratio_mean[key] = "No aspect ratio"
             labels_aspect_ratio_std[key] = "No aspect ratio"
         
@@ -143,10 +155,17 @@ def print_information(num_images_to_visualize):
     print("Total labels for", num_images_to_visualize, "images is:", total_label_count, "\n")
     print("Total labels per class:", labels_dict, "\n")
     print("Percentage of detected objects per class:", labels_percentages, "\n")
+    print()
     print("Average width (in pixels) for each class are", labels_width_mean, "\n")
     print("The standard deviation in width (in pixels) for each class are", labels_width_std, "\n")
+    print("The minimum width (in pixels) for each class are", labels_width_min, "\n")
+    print("The maximum width (in pixels) for each class are", labels_width_max, "\n")
+    print()
     print("Average height (in pixels) for each class are", labels_height_mean, "\n")
     print("The standard deviation in height (in pixels) for each class are", labels_height_std, "\n")
+    print("The minimum height (in pixels) for each class are", labels_width_min, "\n")
+    print("The maximum height (in pixels) for each class are", labels_width_max, "\n")
+    print()
     print("Average aspect ratio for each class are", labels_aspect_ratio_mean, "\n")
     print("The standard deviation in aspect ratio for each class are", labels_aspect_ratio_std, "\n")
 
