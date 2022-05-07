@@ -9,7 +9,10 @@ from tops.checkpointer import load_checkpoint
 
 
 @torch.no_grad()
+
+
 def evaluation(cfg, N_images: int):
+    """Find inference speed (FPS) and time spent on N_images"""
     model =instantiate(cfg.model)
     model.eval()
     model = tops.to_cuda(model)
@@ -37,6 +40,8 @@ def evaluation(cfg, N_images: int):
 @click.command()
 @click.argument("config_path", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option("-n", "--n-images", default=100, type=int)
+
+
 def main(config_path: Path, n_images: int):
     cfg = utils.load_config(config_path)
     evaluation(cfg, n_images)
