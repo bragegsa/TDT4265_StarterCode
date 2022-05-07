@@ -27,7 +27,7 @@ anchors = L(AnchorBoxes)(
     # [vertical, horizontal], counting from bottom up and left to right
 
     feature_sizes = [[32, 256],     [16, 128],  [8, 64],    [4, 32],    [2, 16],    [1, 8]],
-    aspect_ratios = [[0.2, 0.3],    [0.4],      [0.5],      [1.1],      [1.5],      [2]],
+    aspect_ratios = [[2],           [2],        [2],        [2],        [2],        [2]],
     strides =       [[4, 4],        [8, 8],     [16, 16],   [32, 32],   [64, 64],   [128, 128]],
     # These min_sizes are pretty decent
     min_sizes =     [[8, 8],        [16, 16],   [32, 32],   [48, 48],   [64, 64],   [128, 128],     [128, 1024]],
