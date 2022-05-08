@@ -1,0 +1,47 @@
+Total labels for 1000 images is: 13114
+
+Total labels per class: 
+{'background': 0, 'car': 6702, 'truck': 0, 'bus': 363, 'motorcycle': 0, 'bicycle': 1043, 'scooter': 484, 'person': 3363, 'rider': 1159}      
+
+Percentage of detected objects per class: 
+{'background': '0.0%', 'car': '51.0%', 'truck': '0.0%', 'bus': '3.0%', 'motorcycle': '0.0%', 'bicycle': '8.0%', 'scooter': 
+'4.0%', 'person': '26.0%', 'rider': '9.0%'}
+
+
+Average width (in pixels) for each class are 
+{'background': 'No width', 'car': 26.4, 'truck': 'No width', 'bus': 52.7, 'motorcycle': 'No width', 'bicycle': 13.7, 'scooter': 8.8, 'person': 6.4, 'rider': 7.9}
+
+The standard deviation in width (in pixels) for each class are 
+{'background': 'No width', 'car': 22.1, 'truck': 'No width', 'bus': 84.9, 'motorcycle': 'No width', 'bicycle': 5.3, 'scooter': 2.8, 'person': 3.5, 'rider': 4.7}
+
+The minimum width (in pixels) for each class are 
+{'background': 'No width', 'car': 3.1, 'truck': 'No width', 'bus': 4.0, 'motorcycle': 'No width', 'bicycle': 3.4, 'scooter': 3.6, 'person': 2.0, 'rider': 2.0}
+
+The maximum width (in pixels) for each class are 
+{'background': 'No width', 'car': 247.1, 'truck': 'No width', 'bus': 398.8, 'motorcycle': 'No width', 'bicycle': 31.6, 'scooter': 17.6, 'person': 30.6, 'rider': 35.3}
+
+
+Average height (in pixels) for each class are 
+{'background': 'No height', 'car': 25.2, 'truck': 'No height', 'bus': 43.1, 'motorcycle': 'No height', 'bicycle': 20.6, 'scooter': 29.8, 'person': 23.6, 'rider': 27.5}
+
+The standard deviation in height (in pixels) for each class are 
+{'background': 'No height', 'car': 15.1, 'truck': 'No height', 'bus': 42.7, 'motorcycle': 'No height', 'bicycle': 6.2, 'scooter': 6.1, 'person': 14.3, 'rider': 15.1}
+
+The minimum height (in pixels) for each class are 
+{'background': 'No height', 'car': 3.3, 'truck': 'No height', 'bus': 5.4, 'motorcycle': 'No height', 'bicycle': 6.0, 'scooter': 13.8, 'person': 7.9, 'rider': 8.7}
+
+The maximum height (in pixels) for each class are 
+{'background': 'No height', 'car': 113.7, 'truck': 'No height', 'bus': 128.0, 'motorcycle': 'No height', 'bicycle': 37.1, 'scooter': 43.2, 'person': 83.9, 'rider': 66.0}
+
+
+Average aspect ratio for each class are 
+{'background': 'No aspect ratio', 'car': 1.1, 'truck': 'No aspect ratio', 'bus': 0.9, 'motorcycle': 'No aspect ratio', 'bicycle': 0.7, 'scooter': 0.3, 'person': 0.3, 'rider': 0.3}
+
+The standard deviation in aspect ratio for each class are 
+{'background': 'No aspect ratio', 'car': 0.7, 'truck': 'No aspect ratio', 'bus': 0.5, 'motorcycle': 'No aspect ratio', 'bicycle': 0.2, 'scooter': 0.1, 'person': 0.1, 'rider': 0.1}
+
+The minimum aspect ratio for each class are {'background': 'No aspect ratio', 'car': 0.1, 'truck': 0.4, 'bus': 0.4, 'motorcycle': 'No aspect ratio', 'bicycle': 0.2, 
+'scooter': 0.1, 'person': 0.1, 'rider': 0.1}
+
+The maximum aspect ratio for each class are {'background': 'No aspect ratio', 'car': 9.0, 'truck': 2.8, 'bus': 3.1, 'motorcycle': 'No aspect ratio', 'bicycle': 2.6, 
+'scooter': 0.5, 'person': 0.6, 'rider': 0.9}
