@@ -18,7 +18,9 @@ model.num_classes = 8 + 1
 train_cpu_transform = L(torchvision.transforms.Compose)(transforms=[
     L(ToTensor)(),
     L(RandomHorizontalFlip)(),
-    L(ColorJitter)(),
+    L(ColorJitter)(brightness=0.4,
+            contrast=0.4,
+            saturation=0.4),
     L(Resize)(imshape="${train.imshape}"),
     L(GroundTruthBoxesToAnchors)(anchors="${anchors}", iou_threshold=0.5),
 ])
